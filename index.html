@@ -1,1 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hindustani Classical Ragas - A Musical Journey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            padding: 10px;
+            position: relative;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+            padding: 0 60px;
+        }
+
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 4em;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 100;
+            padding: 20px;
+            user-select: none;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-50%) scale(1.2);
+        }
+
+        .nav-button:active {
+            transform: translateY(-50%) scale(1);
+        }
+
+        .nav-button-left {
+            left: 0;
+        }
+
+        .nav-button-right {
+            right: 0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: absolute;
+            width: 100%;
+            max-width: 500px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .card.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .nav-area {
+            display: none;
+        }
+
+        .nav-left {
+            display: none;
+        }
+
+        .nav-right {
+            display: none;
+        }
+
+        .nav-arrow {
+            display: none;
+        }
+
+        .nav-arrow {
+            font-size: 4em;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-weight: bold;
+        }
+
+        .card h2 {
+            color: #764ba2;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f093fb;
+        }
+
+        .card-section {
+            margin: 15px 0;
+        }
+
+        .card-section h3 {
+            color: #667eea;
+            font-size: 1em;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-section p {
+            color: #555;
+            line-height: 1.6;
+            font-size: 1.05em;
+        }
+
+        .swars {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 10px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .time-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .song-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            position: relative;
+            z-index: 20;
+        }
+
+        .song-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .nishidha {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            padding: 8px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .counter {
+            text-align: center;
+            color: white;
+            font-size: 1.3em;
+            font-weight: bold;
+            position: relative;
+            z-index: 100;
+            margin-top: 8px;
+        }
+
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: white;
+            transform: scale(1.3);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .card {
+                padding: 20px;
+                max-width: 100%;
+            }
+
+            .nav-button {
+                font-size: 2.5em;
+                padding: 10px;
+            }
+
+            .container {
+                padding: 0 50px;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+            padding: 10px;
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎵 हिन्दुस्तानी शास्त्रीय संगीत के राग 🎵</h1>
+        <p>भारतीय शास्त्रीय संगीत की मधुर संरचना</p>
+        <div class="counter">
+            <span id="currentCard">1</span> / <span id="totalCards">24</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="nav-button nav-button-left" onclick="prevCard()">&lt;</div>
+        <div class="nav-button nav-button-right" onclick="nextCard()">&gt;</div>
+
+        <!-- Raga Yaman -->
+        <div class="card active" data-index="0">
+            <h2>राग यमन</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">नि रे ग म॑ प ध नि सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि ध प म॑ ग रे सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">म (शुद्ध म वर्जित है)</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌙 सायंकाल (प्रथम प्रहर - शाम 6 से 9 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Zindagi+Kaisi+Hai+Paheli+Anand" target="_blank" class="song-link">🎬 "जिंदगी कैसी है पहेली" - आनंद (1971)</a>
+            </div>
+        </div>
+
+        <!-- Raga Bhairav -->
+        <div class="card" data-index="1">
+            <h2>राग भैरव</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे॑ ग म प ध॑ नि सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि ध॑ प म ग रे॑ सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">कोई नहीं</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌅 प्रातःकाल (सुबह 6 से 9 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Mohe+Panghat+Pe+Mughal+e+Azam" target="_blank" class="song-link">🎬 "मोहे पनघट पे" - मुगल-ए-आज़म (1960)</a>
+            </div>
+        </div>
+
+        <!-- Raga Bhairavi -->
+        <div class="card" data-index="2">
+            <h2>राग भैरवी</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे॑ ग॑ म प ध॑ नि॑ सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि॑ ध॑ प म ग॑ रे॑ सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">कोई नहीं (सभी कोमल स्वर)</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌅 प्रातःकाल (समापन राग)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Jab+Deep+Jale+Aana+Chitchor" target="_blank" class="song-link">🎬 "जब दीप जले आना" - चितचोर (1976)</a>
+            </div>
+        </div>
+
+        <!-- Raga Darbari Kanada -->
+        <div class="card" data-index="3">
+            <h2>राग दरबारी कानड़ा</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे॑ ग॑ म प ध॑ सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि॑ ध॑ प म ग॑ रे॑ सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">आरोह में नि</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌙 रात्रि (रात 12 से 3 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Sooraj+Saanjh+Ki+Pyas+Kohraa" target="_blank" class="song-link">🎬 "सूरज साँझ की प्यास" - कोहरा (1964)</a>
+            </div>
+        </div>
+
+        <!-- Raga Malkauns -->
+        <div class="card" data-index="4">
+            <h2>राग मालकौंस</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा ग॑ म ध॑ नि॑ सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि॑ ध॑ म ग॑ सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">रे और प (पंचस्वरी राग)</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌙 रात्रि (रात 12 से 3 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Man+Tarpat+Hari+Darshan+Baiju+Bawra" target="_blank" class="song-link">🎬 "मन तड़पत हरि दर्शन" - बैजू बावरा (1952)</a>
+            </div>
+        </div>
+
+        <!-- Raga Bageshree -->
+        <div class="card" data-index="5">
+            <h2>राग बागेश्री</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा ग॑ म ध नि सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि ध म ग॑ म रे सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">आरोह में प</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌙 रात्रि (रात 9 से 12 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Ketaki+Gulab+Juhi+Pakeezah" target="_blank" class="song-link">🎬 "केतकी गुलाब जूही" - पाकीज़ा (1972)</a>
+            </div>
+        </div>
+
+        <!-- Raga Des -->
+        <div class="card" data-index="6">
+            <h2>राग देस</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे म प नि सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि ध प म ग रे सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">आरोह में ग, अवरोह में ध</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌙 रात्रि (रात 10 से 1 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Piya+Bina+Abhimaan" target="_blank" class="song-link">🎬 "पिया बिना" - अभिमान (1973)</a>
+            </div>
+        </div>
+
+        <!-- Raga Kafi -->
+        <div class="card" data-index="7">
+            <h2>राग काफी</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे ग॑ म प ध नि॑ सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि॑ ध प म ग॑ रे सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">कोई नहीं</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">☀️ दोपहर</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Raah+Mein+Unse+Mulaqat+Vijay" target="_blank" class="song-link">🎬 "राह में उनसे मुलाक़ात" - विजय (1988)</a>
+            </div>
+        </div>
+
+        <!-- Raga Bhupali -->
+        <div class="card" data-index="8">
+            <h2>राग भूपाली (भूप)</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे ग प ध सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा ध प ग रे सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">म और नि (पंचस्वरी राग)</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌅 सायंकाल (शाम 6 से 9 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Jyoti+Kalash+Chhalke+Bhabhi+Ki+Chudiyan" target="_blank" class="song-link">🎬 "ज्योति कलश छलके" - भाभी की चूड़ियाँ (1961)</a>
+            </div>
+        </div>
+
+        <!-- Raga Bihag -->
+        <div class="card" data-index="9">
+            <h2>राग बिहाग</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा ग म प नि सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि ध प म ग रे सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">आरोह में रे, अवरोह में ध</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌙 रात्रि (रात 9 से 12 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Chalte+Chalte+Pakeezah" target="_blank" class="song-link">🎬 "चलते चलते" - पाकीज़ा (1972)</a>
+            </div>
+        </div>
+
+        <!-- Raga Shivranjani -->
+        <div class="card" data-index="10">
+            <h2>राग शिवरंजनी</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे ग॑ प ध॑ सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा ध॑ प ग॑ रे सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">म और नि (पंचस्वरी राग)</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌙 सायंकाल से रात्रि</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Saiyan+Re+Saiyan+Abhimaan" target="_blank" class="song-link">🎬 "सैयाँ रे सैयाँ" - अभिमान (1973)</a>
+            </div>
+        </div>
+
+        <!-- Raga Pahadi -->
+        <div class="card" data-index="11">
+            <h2>राग पहाड़ी</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा ग म प नि सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि प म ग सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">रे और ध (पंचस्वरी राग)</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">☀️ कोई भी समय (लघु राग)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Saiyan+Dil+Mein+Aana+Re+Bahar" target="_blank" class="song-link">🎬 "सैयाँ दिल में आना रे" - बहार (1951)</a>
+            </div>
+        </div>
+
+        <!-- Raga Todi -->
+        <div class="card" data-index="12">
+            <h2>राग तोड़ी</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे॑ ग॑ म॑ प ध॑ नि सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि ध॑ प म॑ ग॑ रे॑ सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">कोई नहीं</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">☀️ मध्याह्न (सुबह 10 से दोपहर 1 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Badariya+Baras+Gayi+Guddi" target="_blank" class="song-link">🎬 "बदरिया बरस गई" - गुड्डी (1971)</a>
+            </div>
+        </div>
+
+        <!-- Raga Marwa -->
+        <div class="card" data-index="13">
+            <h2>राग मारवा</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे॑ ग म॑ ध नि सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि ध म॑ ग रे॑ सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">प (पंचम वर्जित)</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌅 सायंकाल (शाम 4 से 7 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Jhanak+Jhanak+Tori+Baje+Payaliya+Mere+Huzoor" target="_blank" class="song-link">🎬 "झनक झनक तोरी बाजे पायलिया" - मेरे हुज़ूर (1968)</a>
+            </div>
+        </div>
+
+        <!-- Raga Puriya Dhanashree -->
+        <div class="card" data-index="14">
+            <h2>राग पूरिया धनाश्री</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे॑ ग म॑ प नि॑ सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि॑ ध प म॑ ग रे॑ सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">कोई नहीं</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌅 सायंकाल (शाम 6 से 9 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Raina+Beeti+Jaaye+Amar+Prem" target="_blank" class="song-link">🎬 "रैना बीती जाये" - अमर प्रेम (1972)</a>
+            </div>
+        </div>
+
+        <!-- Raga Jaunpuri -->
+        <div class="card" data-index="15">
+            <h2>राग जौनपुरी</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे म प ध॑ सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि॑ ध॑ प म ग रे सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">आरोह में ग और नि</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌙 रात्रि (रात 12 से 3 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Insaaf+Ka+Mandir+Hai+Yeh+Bhagwan+Ka+Ghar+Hai+Amar" target="_blank" class="song-link">🎬 "इंसाफ़ का मंदिर है ये" - अमर (1954)</a>
+            </div>
+        </div>
+
+        <!-- Raga Durga -->
+        <div class="card" data-index="16">
+            <h2>राग दुर्गा</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे म प ध सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा ध प म रे सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">ग और नि (पंचस्वरी राग)</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌙 रात्रि (रात 9 से 12 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Koi+Gata+Main+So+Jata+Brahmachari" target="_blank" class="song-link">🎬 "कोई गाता मैं सो जाता" - ब्रह्मचारी (1968)</a>
+            </div>
+        </div>
+
+        <!-- Raga Miya Ki Malhar -->
+        <div class="card" data-index="17">
+            <h2>राग मियाँ की मल्हार</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा म रे सा रे म प नि॑ ध नि सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि ध प म ग रे सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">कोई नहीं</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌧️ वर्षा ऋतु / दोपहर बाद</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Aaj+Sawan+Ki+Ghata+Geet+Gaya+Hai+Chandni" target="_blank" class="song-link">🎬 "आज सावन की घटा" - चाँदनी (1989)</a>
+            </div>
+        </div>
+
+        <!-- Raga Kedar -->
+        <div class="card" data-index="18">
+            <h2>राग केदार</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा म प ध नि सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि ध प म ग म रे सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">आरोह में रे और ग</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌙 रात्रि (रात 9 से 12 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Kaisi+Paheli+Zindagani+Parineeta" target="_blank" class="song-link">🎬 "कैसी पहेली ज़िंदगानी" - परिणीता (2005)</a>
+            </div>
+        </div>
+
+        <!-- Raga Jaijaiwanti -->
+        <div class="card" data-index="19">
+            <h2>राग जयजयवन्ती</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा ग म ध नि सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि ध प म ग रे सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">आरोह में रे और प</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌙 रात्रि (रात 9 से 12 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Jab+Dil+Hi+Toot+Gaya+Shahjehan" target="_blank" class="song-link">🎬 "जब दिल ही टूट गया" - शाहजहाँ (1946)</a>
+            </div>
+        </div>
+
+        <!-- Raga Maru Bihag -->
+        <div class="card" data-index="20">
+            <h2>राग मारू बिहाग</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे॑ ग म प ध नि सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि ध प म ग रे सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">कोई नहीं</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌙 रात्रि (रात 9 से 12 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Tu+Ganga+Ki+Mauj+Baiju+Bawra" target="_blank" class="song-link">🎬 "तू गंगा की मौज" - बैजू बावरा (1952)</a>
+            </div>
+        </div>
+
+        <!-- Raga Alhaiya Bilawal -->
+        <div class="card" data-index="21">
+            <h2>राग अल्हैया बिलावल</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे ग म प ध नि सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि ध प म ग रे सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">कोई नहीं (सभी शुद्ध स्वर)</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">☀️ प्रातःकाल (सुबह 9 से 12 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Albela+Sajan+Aayo+Re+Hum+Dil+De+Chuke+Sanam" target="_blank" class="song-link">🎬 "अलबेला सजन आयो रे" - हम दिल दे चुके सनम (1999)</a>
+            </div>
+        </div>
+
+        <!-- Raga Basant -->
+        <div class="card" data-index="22">
+            <h2>राग बसन्त</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे॑ ग म॑ प ध नि सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि ध प म॑ ग रे॑ सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">कोई नहीं</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌸 बसन्त ऋतु / रात्रि</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Ketaki+Gulab+Juhi+Champa+Chaman+Mein+Khile+Basant+Bahar" target="_blank" class="song-link">🎬 "केतकी गुलाब जूही चम्पा" - बसन्त बहार (1956)</a>
+            </div>
+        </div>
+
+        <!-- Raga Tilak Kamod -->
+        <div class="card" data-index="23">
+            <h2>राग तिलक कामोद</h2>
+            <div class="card-section">
+                <h3>आरोह</h3>
+                <p class="swars">सा रे ग म प ध नि सा</p>
+            </div>
+            <div class="card-section">
+                <h3>अवरोह</h3>
+                <p class="swars">सा नि ध प म ग रे सा</p>
+            </div>
+            <div class="card-section">
+                <h3>वर्जित स्वर</h3>
+                <p class="nishidha">कोई नहीं</p>
+            </div>
+            <div class="card-section">
+                <h3>समय</h3>
+                <p class="time-badge">🌙 रात्रि (रात 9 से 12 बजे)</p>
+            </div>
+            <div class="card-section">
+                <h3>लोकप्रिय फ़िल्मी गीत</h3>
+                <a href="https://www.youtube.com/results?search_query=Saanj+Dhale+Gagan+Tale+Guide" target="_blank" class="song-link">🎬 "साँझ ढले गगन तले" - गाइड (1965)</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="progress-dots" id="progressDots"></div>
+
+    <div class="footer">
+        <p>✨ आगे बढ़ने के लिए दाएँ (&gt;) और पीछे जाने के लिए बाएँ (&lt;) टैप करें • सा रे ग म प ध नि सा ✨</p>
+    </div>
+
+    <script>
+        let currentIndex = 0;
+        const cards = document.querySelectorAll('.card');
+        const totalCards = cards.length;
+        
+        // Initialize progress dots
+        const dotsContainer = document.getElementById('progressDots');
+        for (let i = 0; i < totalCards; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            if (i === 0) dot.classList.add('active');
+            dotsContainer.appendChild(dot);
+        }
+        
+        function showCard(index) {
+            cards.forEach(card => card.classList.remove('active'));
+            cards[index].classList.add('active');
+            
+            // Update counter
+            document.getElementById('currentCard').textContent = index + 1;
+            
+            // Update progress dots
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+        
+        function nextCard() {
+            currentIndex = (currentIndex + 1) % totalCards;
+            showCard(currentIndex);
+        }
+        
+        function prevCard() {
+            currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+            showCard(currentIndex);
+        }
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextCard();
+            if (e.key === 'ArrowLeft') prevCard();
+        });
+        
+        // Touch swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+        
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) nextCard();
+            if (touchEndX > touchStartX + 50) prevCard();
+        }
+    </script>
+</body>
+</html>
